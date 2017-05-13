@@ -54,8 +54,10 @@ int getRun(int *a, int i, int n, int minrun)
 
 void insertionSort(int *a, int n, int lo, int hi)
 {
-	for (int i = lo; i < hi - 1; i++){
-		for (int j = i + 1; j < hi; j++){
+	for (int i = lo; i < hi - 1; i++)
+	{
+		for (int j = i + 1; j < hi; j++)
+		{
 			if (a[i] > a[j])
 				swap(a, i, j);
 		}
