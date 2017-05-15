@@ -88,7 +88,7 @@ int main (int argc, char* argv[])
 	for(int i = 0; i < n; i++)
 		fprintf(out, "%d ", a[i]);
 	
-
+	free(a);
 	fclose(in);
 	fclose(out);
 	return 0;

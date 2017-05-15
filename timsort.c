@@ -7,8 +7,6 @@
 #include <string.h>
 //using https://neerc.ifmo.ru/wiki/index.php?title=Timsort
 
-FILE *in, *out;
-
 struct pair {
 	int first;
 	int second;
@@ -27,7 +25,7 @@ void swap(int *a, int i, int j)
 //minrun - minimal size of run-subarray
 int getMinrun(int n)
 { //getting the minimal size of run
-	int r = 0;  /* becomes 1 if the least significant bits contain at least one off bit */
+	int r = 0;  // becomes 1 if the least significant bits contain at least one off bit 
 	while (n >= 64) {
 		r |= n & 1;
 		n >>= 1;
@@ -192,7 +190,7 @@ void merge(int *a, int n, struct pair X, struct pair Y)
 }
 
 void mergeAll(int *a, int n, struct pair *stack, int stackSize, int *sp)
-{
+{ //used for merging subarrays 
 	int x, y, z, f;
 	while (*sp > 3)
 	{
@@ -205,21 +203,12 @@ void mergeAll(int *a, int n, struct pair *stack, int stackSize, int *sp)
 	    	f = 1000000000;
 		if ((z <= x + y || f <= z + y) && y <= z) //left merge
 		{
-			// if (x < z)
-			// {
-			// 	merge(a, n, stack[*sp - 2], stack[*sp - 1]);
-			// 	stack[*sp - 2].second += x;
-			// 	(*sp)--;
-			// }
-			// else
-			// {
-			merge(a, n, stack[*sp - 3], stack[*sp - 2]); //right merge
+			merge(a, n, stack[*sp - 3], stack[*sp - 2]);
 			stack[*sp - 3].second += y;
 			stack[*sp - 2] = stack[*sp - 1];
 			(*sp)--;
-			// }
 		}
-		else //if (y <= x)//????
+		else //right merge
 		{
 			merge(a, n, stack[*sp - 2], stack[*sp - 1]);
 			stack[*sp - 2].second += x;
@@ -234,22 +223,6 @@ void mergeAll(int *a, int n, struct pair *stack, int stackSize, int *sp)
 		stack[*sp - 2].second += x;
 		(*sp)--;
 	}
-	// if (*sp == 3)
-	// {
-	// 	x = stack[*sp - 1].second;
-	// 	y = stack[*sp - 2].second;
-	// 	merge(a, n, stack[*sp - 2], stack[*sp - 1]);
-	// 	stack[*sp - 2].second += x;
-	// 	(*sp)--;
-	// }
-	// if (*sp == 2)
-	// {
-	// 	x = stack[*sp - 1].second;
-	// 	y = stack[*sp - 2].second;
-	// 	merge(a, n, stack[*sp - 2], stack[*sp - 1]);
-	// 	stack[*sp - 2].second += x;
-	// 	(*sp)--;
-	// }
 }
 
 void timsort(int *a, int n)
@@ -260,19 +233,13 @@ void timsort(int *a, int n)
 	stack = (struct  pair*)malloc(stackSize * sizeof(struct pair));
 	int sp = 0; //sp = stackPointer
 	partition(a, n, minrun, stack, &sp);
-	// for (int i = 0; i < sp; i++)
-	// {
-	// 	fprintf(out, "\n%d %d\n", stack[i].first, stack[i].second);
-	// }
 	mergeAll(a, n, stack, stackSize, &sp);
-	// merge(a, n, stack[sp - 2], stack[sp - 1]);
-	// sp--;
 	free(stack);
 }
 
 int main(int argc, char* argv[])
 {
-
+	FILE *in, *out;
 	in = fopen("in.txt", "r");
 	out = fopen("out.txt", "w");
 
