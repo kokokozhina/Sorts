@@ -239,54 +239,30 @@ void timsort(int *a, int n)
 
 int main(int argc, char* argv[])
 {
-	FILE *in, *out;
+	FILE *in, *out; 
 	in = fopen("in.txt", "r");
 	out = fopen("out.txt", "w");
 
 	srand(time(NULL));
 	int n;
+	fscanf(in, "%d", &n);
+	int *a;
+	a = (int*)malloc(n * sizeof(int)); 
 
-	for (int z = 0; z < 100000; z++)
+	fprintf(out, "Unsorted array: ");
+	for(int i = 0; i < n; i++)
 	{
-		//fprintf(out, "Unsorted array: ");
-		n = rand() % 100000;
-		if(n == 0)
-			continue;
-		int *a;
-		a = (int*)malloc(n * sizeof(int));
-		for (int i = 0; i < n; i++)
-		{
-			a[i] = rand() % 1000000;
-			fprintf(out, "%d ", a[i]);
-		}
-		timsort(a, n);
-		bool flag = false;
-
-		for (int i = 1; i < n; i++)
-		{
-			if (a[i] < a[i - 1])
-			{
-				fprintf(out, "\nNO %d\n ", i);
-				flag = true;
-				break;
-			}
-		}
-		if (flag)
-		{
-			fprintf(out, "\nn:   %d", n);
-
-			fprintf(out, "\nminrun:   %d", getMinrun(n));
-			fprintf(out, "\nSorted array:   ");
-
-			for (int i = 0; i < n; i++)
-				fprintf(out, "%d ", a[i]);
-			 fclose(in);
-			 fclose(out);
-			 return 0;
-		}
-		free(a);
+		a[i] = rand() % 100;
+		fprintf(out, "%d ", a[i]);
 	}
-	fprintf(out, "YES\n ");
+
+	timsort(a, n);
+
+	fprintf(out, "\nSorted array:   ");
+	for(int i = 0; i < n; i++)
+		fprintf(out, "%d ", a[i]);
+	
+	free(a);
 	fclose(in);
 	fclose(out);
 	return 0;

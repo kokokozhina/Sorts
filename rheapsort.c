@@ -46,7 +46,7 @@ tree *add(tree *t, int node)
 	return t;
 }
 
-void rheap_sort(tree *t, int *a, int n)
+void rheap_sort(int *a, int n)
 {
 	tree *t = NULL;
 	for (int i = 0; i < n; i++)
@@ -67,59 +67,30 @@ void rheap_sort(tree *t, int *a, int n)
 int main(int argc, char* argv[])
 {
 
-	FILE *in, *out;
+	FILE *in, *out; 
 	in = fopen("in.txt", "r");
 	out = fopen("out.txt", "w");
 
 	srand(time(NULL));
+	int n;
+	fscanf(in, "%d", &n);
+	int *a;
+	a = (int*)malloc(n * sizeof(int)); 
 
-	for(int q = 5000; q <= 100000; q+=5000)
+	fprintf(out, "Unsorted array: ");
+	for(int i = 0; i < n; i++)
 	{
-		int n = q;
-		int *a;
-		a = (int*)malloc(n * sizeof(int));
-		unsigned long long start_t, end_t, total_t = 0;
-		int iter = 1000;
-		for (int z = 0; z < iter; z++)
-		{
-			
-			for (int i = 0; i < n; i++)
-			{
-				a[i] = rand() % 1000000;
-				//fprintf(out, "%d ", a[i]);
-			}
-			start_t = clock();
-			rheap_sort(a, n);
-			end_t = clock();
-			total_t += end_t - start_t;
-			bool flag = false;
-
-			for (int i = 1; i < n; i++)
-			{
-				if (a[i] < a[i - 1])
-				{
-					fprintf(out, "\nNO %d\n ", i);
-					flag = true;
-					break;
-				}
-			}
-			if (flag)
-			{
-				fprintf(out, "\nn:   %d", n);
-
-				fprintf(out, "\nSorted array:   ");
-
-				for (int i = 0; i < n; i++)
-					fprintf(out, "%d ", a[i]);
-				 fclose(in);
-				 fclose(out);
-				 return 0;
-			}
-			//free(a);
-		}
-		free(a);
-		fprintf(out, "(%d, %f)\n", n / 1000, total_t / (double)iter / CLOCKS_PER_SEC);
+		a[i] = rand() % 100;
+		fprintf(out, "%d ", a[i]);
 	}
+
+	rheap_sort(a, n);
+
+	fprintf(out, "\nSorted array:   ");
+	for(int i = 0; i < n; i++)
+		fprintf(out, "%d ", a[i]);
+	
+	free(a);
 	fclose(in);
 	fclose(out);
 	return 0;

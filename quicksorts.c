@@ -118,6 +118,19 @@ void dualPivotQuicksort(int *a, int left, int right, int div)
 		dualPivotQuicksort(a, less, great, div);
 }
 
+int med (int a, int b, int c)
+{
+	if (a > b) { 
+		if (c > a) 
+		  return a;
+	return (b > c) ? b : c;
+	} 
+	
+	if (c > b) 
+		return b;
+	return (a > c) ? a : c;
+}
+
 //3 med
 void quicksortMedOf3(int *a, int l, int r) //Kormen
 {
