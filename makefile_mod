@@ -1,0 +1,8 @@
+CC=gcc
+
+CFLAGS=-O2 -Wall
+
+all: heapsort timsort
+
+clean:
+	rm -rf *.o 
