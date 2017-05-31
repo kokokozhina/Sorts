@@ -2,7 +2,7 @@ CC=gcc
 
 CFLAGS=-O2 -Wall
 
-all: heapsort timsort
+all: quicksorts heapsort heapsort_mod timsort
 
 clean:
 	rm -rf *.o 
