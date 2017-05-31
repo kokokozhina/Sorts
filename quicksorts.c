@@ -12,7 +12,7 @@ void swap(int *a, int i, int j)
 
 void quicksort(int *a, int l, int r) //N.Virt 
 {
-	int i, j, x, w;
+	int i, j, x;
 
 	i = l;
 	j = r;
@@ -134,7 +134,7 @@ int med (int a, int b, int c)
 //3 med
 void quicksortMedOf3(int *a, int l, int r) //Kormen
 {
-	int i, j, x, w;
+	int i, j, x;
 
 	i = l;
 	j = r;

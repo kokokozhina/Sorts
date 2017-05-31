@@ -4,6 +4,7 @@
 #include <time.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <math.h>
 #include <string.h>
 //using https://neerc.ifmo.ru/wiki/index.php?title=Timsort
 struct pair {
@@ -46,7 +47,7 @@ int getRun(int *a, int i, int n, int minrun)
 		{
 			j++;
 			order = a[i] <= a[j - 1] ? true : false;
-			while (j < n && (order && a[j - 1] <= a[j] || !order  && a[j - 1] >= a[j]))
+			while (j < n && ((order && a[j - 1] <= a[j]) || (!order  && a[j - 1] >= a[j])))
 				j++;
 			if (!order)
 				reverse(a, i, j);
@@ -221,17 +222,6 @@ void timsort(int *a, int n)
 	partition(a, n, minrun, stack, &sp);
 	mergeAll(a, n, stack, stackSize, &sp);
 	free(stack);
-}
-
-double nmk(double *x, double *y, int n)
-{
-	double sumx = 0, sumy = 0;
-	for (int i = 0; i < n; i++)
-	{
-		sumx += (x[i] / 1000) * log((x[i] / 1000));
-		sumy += y[i];
-	}
-	return (sumy / sumx);
 }
 
 int main(int argc, char* argv[])
