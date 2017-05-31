@@ -6,19 +6,10 @@
 #include <stdbool.h>
 #include <string.h>
 //using https://neerc.ifmo.ru/wiki/index.php?title=Timsort
-
 struct pair {
 	int first;
 	int second;
 };
-
-void swap(int *a, int i, int j)
-{
-	int temp = a[i];
-	a[i] = a[j];
-	a[j] = temp;
-}
-
 
 //run - subarray of input array
 //run-array can have a length bigger then minrun 
@@ -36,8 +27,13 @@ int getMinrun(int n)
 void reverse(int *a, int lo, int hi)
 { //reversing a array in [lo, hi)
 	int upper_bound = lo + (hi - lo) / 2;
+	int temp;
 	for (int i = lo, j = hi - 1; i < upper_bound; i++, j--)
-		swap(a, i, j);
+	{ //swap(a, i, j);
+		temp = a[i];
+		a[i] = a[j];
+		a[j] = temp;
+	}
 }
 
 int getRun(int *a, int i, int n, int minrun)
@@ -93,14 +89,14 @@ void partition(int *a, int n, int minrun, struct pair *stack, int *sp)
 	}
 }
 
-int binsearch(int *aux, int m, int start, int search)
+int binsearch(int *aux, int start, int m, int search)
 {
 	int l = start;
 	int r = m - 1;
 	int mid;
 	while (r - l > 1)
 	{
-		mid = l + (r - l) / 2;
+		mid = l + ((r - l) >> 1);
 		if (aux[mid] <= search)
 			l = mid;
 		else
@@ -114,7 +110,7 @@ int binsearch(int *aux, int m, int start, int search)
 
 void merge(int *a, int n, struct pair X, struct pair Y)
 {
-	int *aux; 
+	int *aux;
 	int auxSize = X.second;
 	aux = (int*)malloc(auxSize * sizeof(int));
 	int j = X.first;
@@ -124,13 +120,15 @@ void merge(int *a, int n, struct pair X, struct pair Y)
 		j++;
 	}
 
-	int i = 0; 
-	j = 0; 
+	int i = 0;
+	j = 0;
 	int k = X.first;
-	bool order = false; //the last сopied element was from X-subarray = false, Y = true;
-	int cnt = 0;
+	bool order; //the last сopied element was from X-subarray = false, Y = true;
+	int cnt;
 	while (i < X.second && j < Y.second)
 	{
+		cnt = 0;
+		order = false;
 		if (aux[i] <= a[j + Y.first])
 		{
 			a[k] = aux[i];
@@ -159,33 +157,21 @@ void merge(int *a, int n, struct pair X, struct pair Y)
 			int finish;
 			if (order)
 			{
-				finish = binsearch(a, Y.first + Y.second, j + Y.first, aux[i]); //upper_bound
-				cnt += finish - j;
-				if (j + Y.first != k)
-				{
-					for (int z = j + Y.first; z < finish; z++, k++, j++)
-					{
-						a[k] = a[j + Y.first];
-					}
-				}
-				
+				finish = binsearch(a, j + Y.first, Y.first + Y.second, aux[i]); //upper_bound
+				if(finish > j + Y.first)
+					memmove(a + k, a + j, (finish - j - Y.first) * sizeof(int));
 			}
 			else
 			{
-				finish = binsearch(aux, auxSize, i, a[j + Y.first]);
-				cnt += finish - i;
-				for (int z = i; z < finish; z++, k++, i++)
-				{
-					a[k] = aux[i];
-				}
+				finish = binsearch(aux, i, auxSize, a[j + Y.first]);
+				if(finish > i)
+					memmove(a + k, aux + i, (finish - i) * sizeof(int));
 			}
 		}
 	}
-	for (; i < auxSize; i++)
-	{
-		a[k] = aux[i];
-		k++;
-	} //we can free ourselves from copying a tail of Y subarray - it's already in his place
+	if(auxSize > i) //we can free ourselves from copying a tail of Y subarray - it's already in his place
+		memmove(a + k, aux + i, (auxSize - i) * sizeof(int));
+
 	free(aux);
 }
 
@@ -197,10 +183,10 @@ void mergeAll(int *a, int n, struct pair *stack, int stackSize, int *sp)
 		x = stack[*sp - 1].second;
 		y = stack[*sp - 2].second;
 		z = stack[*sp - 3].second;
-		if (*sp >= 4) 
-	    	f = stack[*sp - 4].second;
-	    else
-	    	f = 1000000000;
+		if (*sp >= 4)
+			f = stack[*sp - 4].second;
+		else
+			f = 1000000000;
 		if ((z <= x + y || f <= z + y) && y <= z) //left merge
 		{
 			merge(a, n, stack[*sp - 3], stack[*sp - 2]);
@@ -215,7 +201,7 @@ void mergeAll(int *a, int n, struct pair *stack, int stackSize, int *sp)
 			(*sp)--;
 		}
 	}
-	for(int i = *sp; i > 1; i--)
+	for (int i = *sp; i > 1; i--)
 	{
 		x = stack[*sp - 1].second;
 		y = stack[*sp - 2].second;
@@ -235,6 +221,17 @@ void timsort(int *a, int n)
 	partition(a, n, minrun, stack, &sp);
 	mergeAll(a, n, stack, stackSize, &sp);
 	free(stack);
+}
+
+double nmk(double *x, double *y, int n)
+{
+	double sumx = 0, sumy = 0;
+	for (int i = 0; i < n; i++)
+	{
+		sumx += (x[i] / 1000) * log((x[i] / 1000));
+		sumy += y[i];
+	}
+	return (sumy / sumx);
 }
 
 int main(int argc, char* argv[])
@@ -258,9 +255,12 @@ int main(int argc, char* argv[])
 
 	timsort(a, n);
 
+
 	fprintf(out, "\nSorted array:   ");
 	for(int i = 0; i < n; i++)
 		fprintf(out, "%d ", a[i]);
+
+	
 	
 	free(a);
 	fclose(in);

@@ -12,25 +12,10 @@ void swap(int *a, int i, int j)
 	a[j] = temp;
 }
 
-int inline parent(int i)
-{
-	return ((i - 1) >> 1);
-}
-
-int inline left(int i)
-{
-	return (i << 1) + 1;
-}
-
-int inline right(int i)
-{
-	return (i << 1) + 2;
-}
-
 void max_heapify(int *a, int i)
 {
-	int l = left(i);
-	int r = right(i);
+	int l = (i << 1) + 1;
+	int r = (i << 1) + 2;
 	int largest = i;
 	if(l < heap_size && a[l] > a[i])
 		largest = l;
@@ -43,43 +28,24 @@ void max_heapify(int *a, int i)
 	}
 }
 
-void build_max_heap(int *a, int n)
+void heap_sort_mod(int *a, int n)
 {
-	heap_size = n;
-	for(int i = n / 2; i >= 0; i--)
-		max_heapify(a, i);
-}
-
-void heap_sort(int *a, int n) //Kormen
-{
-	build_max_heap(a, n);
-	for(int i = n - 1; i > 0; i--)
+	for (int i = 1; i < n; ++i)
 	{
-		swap(a, 0, i);
-		heap_size--;
-		max_heapify(a, 0);
-	}
-}
-
-void heap_sort_mod(int *a, int n) //Kormen
-{
-	int i;
-
-	for (i = 1; i < n; ++i)
-	{
-       int r = i;
-       int x = a[r];
-       for (;;)
-       {
-       	  int l = parent (r);
-       	  if (a[l] >= x)
-       	  	break;
-       	  a[r] = a[l];
-       	  r = l;
-       }
-       a[r] = x;
+		int s = i;
+		int x = a[s];
+		for (;;)
+		{
+			int p = ((s - 1) >> 1);
+			if (a[p] >= x)
+				break;
+			a[s] = a[p];
+			s = p;
+		}
+		a[s] = x;
 	}
 
+	heap_size = n;	
 	for(int i = n - 1; i > 0; i--)
 	{
 		swap(a, 0, i);
@@ -108,7 +74,7 @@ int main (int argc, char* argv[])
 		fprintf(out, "%d ", a[i]);
 	}
 
-	heap_sort(a, n);
+	heap_sort_mod(a, n);
 
 	fprintf(out, "\nSorted array:   ");
 	for(int i = 0; i < n; i++)

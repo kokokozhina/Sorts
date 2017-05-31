@@ -140,18 +140,7 @@ void quicksortMedOf3(int *a, int l, int r) //Kormen
 	j = r;
 
 	if(r - l + 1 >= 3) 
-	{
-// 		 int b[3]; //choosing 3 different random elements
-// 		 b[0] = rand() % (r - l + 1) + l;
-// 		 b[1] = rand() % (r - l + 1) + l;
-// 		 b[2] = rand() % (r - l + 1) + l;
-// 		 while(b[1] == b[0])
-// 		 	b[1] = rand() % (r - l + 1) + l;
-// 		 while(b[2] == b[0] || b[2] == b[1])
-// 		 	b[2] = rand() % (r - l + 1) + l;
-// 		 x = med(a[b[0]], a[b[1]], a[b[2]]);
 		x = med(a[l], a[r], a[(l + r) / 2]); //[l r (l + r)/2] 
-	}
 	else 
 		x = a[(l + r) / 2];
 	
